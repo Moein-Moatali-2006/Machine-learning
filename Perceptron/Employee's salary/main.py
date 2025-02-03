@@ -64,7 +64,6 @@ axes[1].plot(range(len(model.loss_history)), model.loss_history, color='green', 
 axes[1].set_xlabel("Epochs")
 axes[1].set_ylabel("Mean Squared Error (MSE)")
 axes[1].set_title("Loss Reduction over Epochs")
-
 plt.tight_layout() 
 plt.show()
 
