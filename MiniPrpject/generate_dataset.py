@@ -1,20 +1,16 @@
-import pandas as pd
-#
 import time
 import arcade
-from fruits import Apple
-from fruits import Pear
-from fruits import PP
+import pandas as pd
+from apple import Apple
 from snake import Snake
+
 
 class Game(arcade.Window):
     def __init__(self):
-        super().__init__(width=800,height=400,title="Super Snake 🐍 V1")
+        super().__init__(width=800,height=400,title="Snake game ML 🐍 V2")
         arcade.set_background_color(arcade.color.KHAKI)
 
-        self.food=Apple(self)
-        self.new_food=Pear(self)
-        self.shit=PP(self)
+        self.apple=Apple(self)
         self.snake=Snake(self)
         self.game_over="Game Over"
         self.end_play=False
@@ -22,22 +18,16 @@ class Game(arcade.Window):
 
         self.dataset = []
 
-        
-
     def on_draw(self):
         arcade.start_render()
-        self.food.draw()
+        self.apple.draw()
         self.snake.draw()
-        self.new_food.draw()
-        self.shit.draw()
         arcade.draw_text(f"Score:{self.snake.score}", self.width-120, 15, font_size=20, color=arcade.color.RED)
         if self.end_play:
             arcade.draw_text(self.game_over, 100, 100, font_size=50, color=arcade.color.BLACK)
             self.play=False
-            
-            
+                 
         arcade.finish_render()
-
 
     def on_update(self, delta_time: float):
         # جمع آوری دیتا
@@ -55,25 +45,25 @@ class Game(arcade.Window):
                 "b3":None,
                 "direction":None}
         
-        if self.snake.center_x == self.food.center_x and self.snake.center_y < self.food.center_y:
+        if self.snake.center_x == self.apple.center_x and self.snake.center_y < self.apple.center_y:
             data["a0"] = 1
             data["a1"] = 0
             data["a2"] = 0
             data["a3"] = 0
         
-        elif self.snake.center_x == self.food.center_x and self.snake.center_y > self.food.center_y:
+        elif self.snake.center_x == self.apple.center_x and self.snake.center_y > self.apple.center_y:
             data["a0"] = 0 
             data["a1"] = 0
             data["a2"] = 1
             data["a3"] = 0
         
-        elif self.snake.center_x < self.food.center_x and self.snake.center_y == self.food.center_y:
+        elif self.snake.center_x < self.apple.center_x and self.snake.center_y == self.apple.center_y:
             data["a0"] = 0 
             data["a1"] = 1
             data["a2"] = 0
             data["a3"] = 0
         
-        elif self.snake.center_x < self.food.center_x and self.snake.center_y == self.food.center_y:
+        elif self.snake.center_x < self.apple.center_x and self.snake.center_y == self.apple.center_y:
             data["a0"] = 0 
             data["a1"] = 0
             data["a2"] = 0
@@ -107,24 +97,14 @@ class Game(arcade.Window):
                 data["b3"] = 1
 
         self.dataset.append(data)
-        self.snake.move_ai(self.food.center_x,self.food.center_y)
+        self.snake.move_ai(self.apple.center_x,self.apple.center_y)
 
         if (self.snake.center_x > self.width) or (self.snake.center_x < 0) or (self.snake.center_y > self.height) or (self.snake.center_y < 0):
             self.end_play=True
 
-        if arcade.check_for_collision(self.food , self.snake):
-            self.snake.eat(self.food)
-            self.food=Apple(self)
-
-        if arcade.check_for_collision(self.snake , self.new_food):
-            self.snake.eat(self.new_food)
-            self.new_food=Pear(self)
-            self.snake.score += 1
-
-        if arcade.check_for_collision(self.snake ,self.shit):
-            self.snake.eat(self.shit)
-            self.shit=PP(self)
-            self.snake.score = self.snake.score - 2
+        if arcade.check_for_collision(self.apple , self.snake):
+            self.snake.eat(self.apple)
+            self.apple=Apple(self)
         
         if self.snake.score < 0 :
             self.end_play = True

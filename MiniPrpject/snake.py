@@ -5,17 +5,17 @@ import arcade
 class Snake(arcade.Sprite):
     def __init__(self,game):
         super().__init__()
-        self.width=16
-        self.height=16
-        self.center_x=game.width//2
-        self.center_y=game.height//2
-        self.speed = 8
-        self.change_x=0
-        self.change_y=0
-        self.body=[]
-        self.score=0
-        self.color=arcade.color.BLACK
-        self.colors=[arcade.color.RED,arcade.color.GREEN,arcade.color.ORANGE,arcade.color.PURPLE,arcade.color.YELLOW,arcade.color.BROWN,arcade.color.PINK,arcade.color.CRIMSON,arcade.color.GRAY]
+        self.width = 16
+        self.height = 16
+        self.center_x = game.width // 2
+        self.center_y = game.height // 2
+        self.speed = 4
+        self.change_x = 0
+        self.change_y = 0
+        self.body = []
+        self.score = 0
+        self.color = arcade.color.BLACK
+        self.colors = [arcade.color.RED,arcade.color.GREEN,arcade.color.ORANGE,arcade.color.PURPLE,arcade.color.YELLOW,arcade.color.BROWN,arcade.color.PINK,arcade.color.CRIMSON,arcade.color.GRAY]
 
     
     def draw(self):
