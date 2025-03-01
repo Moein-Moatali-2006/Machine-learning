@@ -31,7 +31,7 @@ Here you can run the program and see the performance of the snake.
 ----
 
 Accuracy :
-!["Accuracy"](pictures\Accuracy_epochs.png)
+!["Accuracy"](https://github.com/Moein-Moatali-2006/Machine-learning/blob/main/MiniPrpject/pictures/Accuracy_epochs.png)
 
 Loss :
-!["Loss"](pictures\loss_epochs.png)
+!["Loss"](https://github.com/Moein-Moatali-2006/Machine-learning/blob/main/MiniPrpject/pictures/loss_epochs.png)
