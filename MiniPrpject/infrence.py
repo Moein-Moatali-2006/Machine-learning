@@ -1,5 +1,7 @@
 import arcade
 import pandas as pd
+import numpy as np
+import tensorflow as tf
 from apple import Apple
 from snake import Snake
 
@@ -13,7 +15,9 @@ class Game(arcade.Window):
         self.game_over = "Game Over"
         self.end_play = False
         self.play = True
-        self.dataset = []
+        self.model = tf.keras.models.load_model("Snake_game_model_ML_ANN_Classification.h5")
+        print("Model loaded...!")
+        
 
     def on_draw(self):
         arcade.start_render()
@@ -29,7 +33,7 @@ class Game(arcade.Window):
         distance_x = self.snake.center_x - self.apple.center_x
         distance_y = self.snake.center_y - self.apple.center_y
 
-        data = {
+        x_test = {
             "wall up": self.height - self.snake.center_y,  
             "wall right": self.width - self.snake.center_x,       
             "wall down": self.snake.center_y,                    
@@ -40,64 +44,43 @@ class Game(arcade.Window):
             "apple left":0,  
             'distance x': distance_x,
             'distance y': distance_y,   
-            "direction": None 
         }
 
     
         if self.snake.center_x == self.apple.center_x:
             if self.snake.center_y < self.apple.center_y:
-                data["apple up"] = 1  
+                x_test["apple up"] = 1  
             else:
-                data["apple down"] = 1  
+                x_test["apple down"] = 1  
         elif self.snake.center_y == self.apple.center_y:
             if self.snake.center_x < self.apple.center_x:
-                data["apple right"] = 1  
+                x_test["apple right"] = 1  
             else:
-                data["apple left"] = 1  
+                x_test["apple left"] = 1   
 
         
         # for part in self.snake.body:
         #     if self.snake.center_x == part["x"]:
         #         if self.snake.center_y < part["y"]:
-        #             data["b0"] = 1  
+        #             x_test["b0"] = 1  
         #         else:
-        #             data["b2"] = 1  
+        #             x_test["b2"] = 1  
         #     elif self.snake.center_y == part["y"]:
         #         if self.snake.center_x < part["x"]:
-        #             data["b1"] = 1  
+        #             x_test["b1"] = 1  
         #         else:
-        #             data["b3"] = 1  
+        #             x_test["b3"] = 1  
 
-        
-        if self.snake.change_x == 0 and self.snake.change_y == 1:
-            data["direction"] = 0  
-        elif self.snake.change_x == 1 and self.snake.change_y == 0:
-            data["direction"] = 1  
-        elif self.snake.change_x == 0 and self.snake.change_y == -1:
-            data["direction"] = 2  
-        elif self.snake.change_x == -1 and self.snake.change_y == 0:
-            data["direction"] = 3  
-
-        
-        self.dataset.append(data)
-
-        # self.snake.move_ai(self.apple.center_x, self.apple.center_y)
-        if self.snake.center_x < self.apple.center_x:
-            self.snake.change_x = 1
-            self.snake.change_y = 0
-        elif self.snake.center_y > self.apple.center_y :
-            self.snake.change_y = -1
-            self.snake.change_x = 0
-        elif self.snake.center_y < self.apple.center_y :
-            self.snake.change_y = 1
-            self.snake.change_x = 0
-        elif self.snake.center_x > self.apple.center_x:
-            self.snake.change_x = -1
-            self.snake.change_y = 0
-        
-        self.snake.move()
-
-        if (self.snake.center_x > self.width) or (self.snake.center_x < 0) or (self.snake.center_y > self.height) or (self.snake.center_y < 0):
+        # move
+        x_test_array = np.array(list(x_test.values())).reshape(1,-1)
+        y_pred = self.model.predict(x_test_array)
+        print(y_pred)
+        output = np.argmax(y_pred)
+        print(output)
+        self.snake.move_ml(output)
+       
+        if (self.snake.center_x > self.width) or (self.snake.center_x < 0) or \
+           (self.snake.center_y > self.height) or (self.snake.center_y < 0):
             self.end_play = True
 
         
@@ -111,9 +94,6 @@ class Game(arcade.Window):
 
     def on_key_release(self, symbol: int, modifiers: int):
         if symbol == arcade.key.Q:
-            if self.dataset: 
-                df = pd.DataFrame(self.dataset)
-                df.to_csv("dataset.csv", index=False)
             arcade.close_window()
             exit(0)
 
