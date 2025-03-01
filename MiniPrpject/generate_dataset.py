@@ -54,20 +54,6 @@ class Game(arcade.Window):
                 data["apple right"] = 1  
             else:
                 data["apple left"] = 1  
-
-        
-        # for part in self.snake.body:
-        #     if self.snake.center_x == part["x"]:
-        #         if self.snake.center_y < part["y"]:
-        #             data["b0"] = 1  
-        #         else:
-        #             data["b2"] = 1  
-        #     elif self.snake.center_y == part["y"]:
-        #         if self.snake.center_x < part["x"]:
-        #             data["b1"] = 1  
-        #         else:
-        #             data["b3"] = 1  
-
         
         if self.snake.change_x == 0 and self.snake.change_y == 1:
             data["direction"] = 0  
@@ -78,10 +64,8 @@ class Game(arcade.Window):
         elif self.snake.change_x == -1 and self.snake.change_y == 0:
             data["direction"] = 3  
 
-        
         self.dataset.append(data)
 
-        # self.snake.move_ai(self.apple.center_x, self.apple.center_y)
         if self.snake.center_x < self.apple.center_x:
             self.snake.change_x = 1
             self.snake.change_y = 0
@@ -99,12 +83,10 @@ class Game(arcade.Window):
 
         if (self.snake.center_x > self.width) or (self.snake.center_x < 0) or (self.snake.center_y > self.height) or (self.snake.center_y < 0):
             self.end_play = True
-
-        
+   
         if arcade.check_for_collision(self.apple, self.snake):
             self.snake.eat(self.apple)
             self.apple = Apple(self)
-
        
         if self.snake.score < 0:
             self.end_play = True
